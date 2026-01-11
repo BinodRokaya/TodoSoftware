@@ -2,176 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Beautiful Todo App</title>
+  <title>Todo Software</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Bootstrap 5 CSS -->
+  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
     body {
-      background: linear-gradient(135deg, #667eea, #764ba2);
       min-height: 100vh;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
       font-family: 'Segoe UI', sans-serif;
     }
 
-    .todo-container {
-      max-width: 600px;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    .todo-card {
+      max-width: 650px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
     }
 
     .todo-header {
-      background: linear-gradient(135deg, #764ba2, #667eea);
-      color: white;
-      border-radius: 16px 16px 0 0;
+      background: linear-gradient(135deg, #2575fc, #6a11cb);
+      color: #fff;
+      border-radius: 18px 18px 0 0;
     }
 
     .todo-item {
       transition: all 0.3s ease;
     }
 
-    .todo-item.completed span {
-      text-decoration: line-through;
-      color: #999;
-    }
-
     .todo-item:hover {
       background-color: #f8f9fa;
     }
 
+    .todo-item.completed span {
+      text-decoration: line-through;
+      color: #9aa0a6;
+    }
+
     .btn-circle {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
+      width: 34px;
+      height: 34px;
       padding: 0;
+      border-radius: 50%;
     }
   </style>
 </head>
 <body>
 
-  <div class="container d-flex justify-content-center align-items-center py-5">
-    <div class="todo-container w-100">
+<div class="container d-flex justify-content-center align-items-center py-5">
+  <div class="todo-card w-100">
 
-      <!-- Header -->
-      <div class="todo-header text-center p-4">
-        <h2 class="mb-0">📝 Todo List</h2>
-        <small>Plan your day effectively</small>
-      </div>
+    <!-- Header -->
+    <div class="todo-header text-center p-4">
+      <h2 class="mb-1">📝 Todo Software</h2>
+      <small>Manage tasks • Stay productive</small>
+    </div>
+
+    <!-- Body -->
+    <div class="p-4">
 
       <!-- Add Task -->
-      <div class="p-4">
-        <div class="input-group mb-3">
-          <input type="text" id="taskInput" class="form-control" placeholder="Add new task...">
-          <button class="btn btn-primary" onclick="addTask()">
-            <i class="bi bi-plus-lg"></i>
-          </button>
-        </div>
-
-        <!-- Task List -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="mb-0">Your Tasks</h6>
-          <button class="btn btn-outline-danger btn-sm" onclick="deleteAllTasks()">
-            <i class="bi bi-trash3"></i> Delete All
-          </button>
-        </div>
-        <ul class="list-group" id="taskList"></ul>
+      <div class="input-group mb-3">
+        <input type="text" id="taskInput" class="form-control" placeholder="Enter a new task...">
+        <button class="btn btn-primary" onclick="addTask()">
+          <i class="bi bi-plus-lg"></i>
+        </button>
       </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-semibold">Your Tasks</span>
+        <button class="btn btn-outline-danger btn-sm" onclick="deleteAllTasks()">
+          <i class="bi bi-trash3"></i> Delete All
+        </button>
+      </div>
+
+      <!-- Task List -->
+      <ul class="list-group" id="taskList"></ul>
 
     </div>
   </div>
+</div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+<script>
+  let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-    function saveTasks() {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
+  function saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
+  function renderTasks() {
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+
+    tasks.forEach((task, index) => {
+      const li = document.createElement('li');
+      li.className = `list-group-item d-flex justify-content-between align-items-center todo-item ${task.completed ? 'completed' : ''}`;
+
+      li.innerHTML = `
+        <div class="d-flex align-items-center gap-2">
+          <input type="checkbox" class="form-check-input" ${task.completed ? 'checked' : ''} onclick="toggleTask(${index})">
+          <span>${task.text}</span>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-warning btn-sm btn-circle" onclick="editTask(${index})">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-danger btn-sm btn-circle" onclick="deleteTask(${index})">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+
+      taskList.appendChild(li);
+    });
+  }
+
+  function addTask() {
+    const input = document.getElementById('taskInput');
+    const text = input.value.trim();
+
+    if (text === '') {
+      alert('Please enter a task');
+      return;
     }
 
-    function renderTasks() {
-      const taskList = document.getElementById('taskList');
-      taskList.innerHTML = '';
-
-      tasks.forEach((task, index) => {
-        const li = document.createElement('li');
-        li.className = `list-group-item d-flex justify-content-between align-items-center todo-item ${task.completed ? 'completed' : ''}`;
-
-        li.innerHTML = `
-          <div class="d-flex align-items-center gap-2">
-            <input type="checkbox" class="form-check-input" ${task.completed ? 'checked' : ''} onclick="toggleTask(${index})">
-            <span>${task.text}</span>
-          </div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-warning btn-sm btn-circle" onclick="editTask(${index})">
-              <i class="bi bi-pencil"></i>
-            </button>
-            <button class="btn btn-danger btn-sm btn-circle" onclick="deleteTask(${index})">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        `;
-
-        taskList.appendChild(li);
-      });
-    }
-
-    function addTask() {
-      const input = document.getElementById('taskInput');
-      const text = input.value.trim();
-
-      if (text === '') return alert('Please enter a task');
-
-      tasks.push({ text, completed: false });
-      input.value = '';
-      saveTasks();
-      renderTasks();
-    }
-
-    function toggleTask(index) {
-      tasks[index].completed = !tasks[index].completed;
-      saveTasks();
-      renderTasks();
-    }
-
-    function deleteTask(index) {
-      if (confirm('Delete this task?')) {
-        tasks.splice(index, 1);
-        saveTasks();
-        renderTasks();
-      }
-    }
-
-    function editTask(index) {
-      const newText = prompt('Edit task', tasks[index].text);
-      if (newText !== null && newText.trim() !== '') {
-        tasks[index].text = newText.trim();
-        saveTasks();
-        renderTasks();
-      }
-    }
-
-    function deleteAllTasks() {
-      if (tasks.length === 0) {
-        alert('No tasks to delete');
-        return;
-      }
-
-      if (confirm('Are you sure you want to delete all tasks?')) {
-        tasks = [];
-        saveTasks();
-        renderTasks();
-      }
-    }
-    }
-
+    tasks.push({ text, completed: false });
+    input.value = '';
+    saveTasks();
     renderTasks();
-  </script>
+  }
+
+  function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed;
+    saveTasks();
+    renderTasks();
+  }
+
+  function editTask(index) {
+    const updatedText = prompt('Edit task', tasks[index].text);
+    if (updatedText !== null && updatedText.trim() !== '') {
+      tasks[index].text = updatedText.trim();
+      saveTasks();
+      renderTasks();
+    }
+  }
+
+  function deleteTask(index) {
+    if (confirm('Delete this task?')) {
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    }
+  }
+
+  function deleteAllTasks() {
+    if (tasks.length === 0) {
+      alert('No tasks available');
+      return;
+    }
+
+    if (confirm('Are you sure you want to delete all tasks?')) {
+      tasks = [];
+      saveTasks();
+      renderTasks();
+    }
+  }
+
+  renderTasks();
+</script>
 </body>
 </html>
