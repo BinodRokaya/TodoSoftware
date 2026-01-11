@@ -73,6 +73,12 @@
         </div>
 
         <!-- Task List -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0">Your Tasks</h6>
+          <button class="btn btn-outline-danger btn-sm" onclick="deleteAllTasks()">
+            <i class="bi bi-trash3"></i> Delete All
+          </button>
+        </div>
         <ul class="list-group" id="taskList"></ul>
       </div>
 
@@ -149,6 +155,20 @@
         saveTasks();
         renderTasks();
       }
+    }
+
+    function deleteAllTasks() {
+      if (tasks.length === 0) {
+        alert('No tasks to delete');
+        return;
+      }
+
+      if (confirm('Are you sure you want to delete all tasks?')) {
+        tasks = [];
+        saveTasks();
+        renderTasks();
+      }
+    }
     }
 
     renderTasks();
