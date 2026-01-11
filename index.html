@@ -75,9 +75,6 @@
       <!-- Actions -->
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-semibold">Your Tasks</span>
-        <button class="btn btn-outline-danger btn-sm" onclick="deleteAllTasks()">
-          <i class="bi bi-trash3"></i> Delete All
-        </button>
       </div>
 
       <!-- Task List -->
@@ -162,12 +159,7 @@
     }
   }
 
-  function deleteAllTasks() {
-    if (tasks.length === 0) {
-      alert('No tasks available');
-      return;
-    }
-
+  
     if (confirm('Are you sure you want to delete all tasks?')) {
       tasks = [];
       saveTasks();
